@@ -100,7 +100,7 @@ function spawnMeteors() {
     ); //gets the angle of the triangle
     const velocity = {
       x: 0,
-      y: Math.sin(angle) * 2,
+      y: Math.sin(angle),
     };
     //Every 2 sec will create a random meteor
     meteors.push(new Meteor(x, y, radius, colour, velocity));
@@ -117,6 +117,13 @@ function animate() {
   });
   meteors.forEach((meteor, meteorIndex) => {
     meteor.update(); //keeps updating the x and y value of bullet
+    bullets.forEach((bullet, bulletIndex) => {
+      const dist = Math.hypot(bullet.x - meteor.x, bullet.y - meteor.y);
+      if (dist - meteor.radius - bullet.radius < 1) {
+        meteors.splice(meteorIndex, 1);
+        bullets.splice(bulletIndex, 1);
+      }
+    });
   });
 }
 
