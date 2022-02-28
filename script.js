@@ -1,5 +1,7 @@
 const canvas = document.getElementById("canvas");
 const c = canvas.getContext("2d");
+const bullets = [];
+const meteors = [];
 
 class Player {
   //Player which is a circle needs x, y, radius and colour
@@ -15,6 +17,7 @@ class Player {
     //Arc needs x, y, radius, start angle, end angle, counterclockwise
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     c.fillStyle = this.colour;
+    //This is to fill the circle drawn
     c.fill();
   }
 }
@@ -37,9 +40,37 @@ class Bullet {
     //This is to fill the circle drawn
     c.fill();
   }
+  // update is to update the new values as the frame goes
   update() {
-    this.x = this.x + this.velocity.x;
-    this.y = this.y + this.velocity.y;
+    this.draw();
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
+  }
+}
+
+class Meteor {
+  //Player which is a circle needs x, y, radius and colour
+  constructor(x, y, radius, colour, velocity) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.colour = colour;
+    this.velocity = velocity;
+  }
+  draw() {
+    //Need to draw the circle on the canvas
+    c.beginPath();
+    //Arc needs x, y, radius, start angle, end angle, counterclockwise
+    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    c.fillStyle = this.colour;
+    //This is to fill the circle drawn
+    c.fill();
+  }
+  // update is to update the new values as the frame goes
+  update() {
+    this.draw();
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
   }
 }
 
@@ -57,13 +88,35 @@ function handleCanvasSize() {
 // //Call the function out so that at the very start it will be the right size
 handleCanvasSize();
 
+function spawnMeteors() {
+  setInterval(() => {
+    const radius = Math.random() * (50 - 20) + 20;
+    const x = Math.random() * canvas.clientWidth; //gets any number within the width
+    const y = 0 - radius; //starts from outside of canvas
+    const colour = "red";
+    const angle = Math.atan2(
+      canvas.clientHeight - 10 - y,
+      canvas.clientWidth / 2 - x
+    ); //gets the angle of the triangle
+    const velocity = {
+      x: 0,
+      y: Math.sin(angle) * 2,
+    };
+    //Every 2 sec will create a random meteor
+    meteors.push(new Meteor(x, y, radius, colour, velocity));
+  }, 2000);
+}
+
 function animate() {
-  requestAnimationFrame(animate);
-  c.clearRect(0, 0, canvas.clientWidth, canvas.height); //Every time the loop runs it will clear the drawing hence will look like a bullet moving only
-  player.draw();
+  requestAnimationFrame(animate); //repeats itself
+  // c.clearRect(0, 0, canvas.clientWidth, canvas.height); //Every time the loop runs it will clear the drawing hence will look like a bullet moving only
+  // player.draw();
+  handleCanvasSize(); //keeps adjusting the canvas and replace itself while still drawing my player
   bullets.forEach((bullet) => {
-    bullet.update();
-    bullet.draw();
+    bullet.update(); //keeps updating the x and y value of bullet
+  });
+  meteors.forEach((meteor, meteorIndex) => {
+    meteor.update(); //keeps updating the x and y value of bullet
   });
 }
 
@@ -76,8 +129,8 @@ window.addEventListener("click", (event) => {
     event.clientX - canvas.clientWidth / 2
   );
   const velocity = {
-    x: Math.cos(angle),
-    y: Math.sin(angle),
+    x: Math.cos(angle) * 4,
+    y: Math.sin(angle) * 4,
   };
   bullets.push(
     new Bullet(
@@ -88,12 +141,7 @@ window.addEventListener("click", (event) => {
       velocity
     )
   );
-});
-
-const x = canvas.clientWidth / 2;
-const y = canvas.clientHeight - 10; //10 cause player size is 10
-const player = new Player(x, y, 10, "#black");
-
-const bullets = [];
+}); //check when click to get value of the mouse click x and y and calculate the velocity
 
 animate();
+spawnMeteors();
