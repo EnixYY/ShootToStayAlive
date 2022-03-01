@@ -30,7 +30,57 @@ body {
 .container .score-board {
   position: fixed;
   z-index: 100;
-  top: 0px;
-  left: 0px;
+  top: 5px;
+  left: 10px;
+  font-weight: bold;
   user-select: none;
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.container .menu-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container .menu-container .menu {
+  background-color: maroon;
+  width: 70%;
+  padding: 0px 10px 10px 10px;
+  border-radius: 20%;
+  text-align: center;
+}
+
+.container .menu-container .menu .big-score {
+  font-size: 50px;
+  color: aqua;
+  margin: 15px 0px 0px 0px;
+  display: none;
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.container .menu-container .menu .point-label {
+  color: aqua;
+  font-weight: bold;
+  margin-top: 10px;
+  display: none;
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.container .menu-container .menu .button-container .start-button {
+  color: black;
+  font-size: 20px;
+  background-color: aqua;
+  width: 50%;
+  border-radius: 12px;
+  border: none;
+  margin-top: 10px;
+  padding: 10px 10px 10px 10px;
+  font-family: "Lucida Console", "Courier New", monospace;
 }

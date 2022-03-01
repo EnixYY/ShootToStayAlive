@@ -1,10 +1,14 @@
-const canvas = document.getElementById("canvas");
+const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
-const bullets = [];
-const meteors = [];
+let bullets = [];
+let meteors = [];
 let animationId;
-const scoreBoard = document.getElementById("score");
 let score = 0;
+const scoreBoard = document.querySelector("#score");
+const bigScore = document.querySelector(".big-score");
+const scoreLabel = document.querySelector(".point-label");
+const startButton = document.querySelector(".start-button");
+const menuContainer = document.querySelector(".menu-container");
 
 class Player {
   //Player which is a circle needs x, y, radius and colour
@@ -91,6 +95,11 @@ function handleCanvasSize() {
 //Call the function out so that at the very start it will be the right size
 handleCanvasSize();
 
+function resetGame() {
+  bullets = [];
+  meteors = [];
+}
+
 function spawnMeteors() {
   setInterval(() => {
     const radius = Math.random() * (50 - 20) + 20; //50 is the biggest 20 is the smallest
@@ -103,7 +112,7 @@ function spawnMeteors() {
     ); //gets the angle of the triangle
     const velocity = {
       x: 0,
-      y: Math.sin(angle) / 10,
+      y: Math.sin(angle),
     };
     //Every 2 sec will create a random meteor
     meteors.push(new Meteor(x, y, radius, colour, velocity));
@@ -129,13 +138,17 @@ function animate() {
     meteor.update(); //keeps updating the x and y value of bullet
     if (meteor.y + meteor.radius > canvas.clientHeight) {
       cancelAnimationFrame(animationId); //this will stop all the animation via the frame ID
-      alert("You lose!!!");
+      menuContainer.style.display = "flex";
+      bigScore.style.display = "block";
+      scoreLabel.style.display = "block";
     }
     bullets.forEach((bullet, bulletIndex) => {
       const dist = Math.hypot(bullet.x - meteor.x, bullet.y - meteor.y);
+      //player dies
       if (dist - meteor.radius - bullet.radius < 1) {
         score += 100;
         scoreBoard.innerHTML = score;
+        bigScore.innerHTML = score;
         if (meteor.colour === "red") {
           meteor.colour = "orange";
           bullets.splice(bulletIndex, 1);
@@ -171,5 +184,12 @@ window.addEventListener("click", (event) => {
   ); //make new bullet and push into the array
 }); //check when click to get value of the mouse click x and y and calculate the velocity
 
-animate();
-spawnMeteors();
+startButton.addEventListener("click", () => {
+  resetGame();
+  animate();
+  spawnMeteors();
+  menuContainer.style.display = "none";
+  score = 0;
+  scoreBoard.innerHTML = score;
+  bigScore.innerHTML = score;
+});
