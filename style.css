@@ -24,8 +24,13 @@ body {
   background-color: #7d79e1;
   top: 0;
   left: 0;
+  z-index: 1;
 }
 
 .container .score-board {
   position: fixed;
+  z-index: 100;
+  top: 0px;
+  left: 0px;
+  user-select: none;
 }

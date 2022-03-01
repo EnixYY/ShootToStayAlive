@@ -3,6 +3,7 @@ const c = canvas.getContext("2d");
 const bullets = [];
 const meteors = [];
 let animationId;
+const scoreBoard = document.getElementById("score");
 let score = 0;
 
 class Player {
@@ -85,17 +86,10 @@ function handleCanvasSize() {
   const y = canvas.clientHeight - 10; //10 cause its the size of the player
   const player = new Player(x, y, 10, "#black");
   player.draw();
-  printScore();
 }
 
 //Call the function out so that at the very start it will be the right size
 handleCanvasSize();
-
-function printScore() {
-  c.font = "20px Arial";
-  c.fillText("Score: ", 8, 30);
-  c.fillText(`${score}`, 70, 30);
-}
 
 function spawnMeteors() {
   setInterval(() => {
@@ -141,6 +135,7 @@ function animate() {
       const dist = Math.hypot(bullet.x - meteor.x, bullet.y - meteor.y);
       if (dist - meteor.radius - bullet.radius < 1) {
         score += 100;
+        scoreBoard.innerHTML = score;
         if (meteor.colour === "red") {
           meteor.colour = "orange";
           bullets.splice(bulletIndex, 1);
