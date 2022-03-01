@@ -2,6 +2,7 @@ const canvas = document.getElementById("canvas");
 const c = canvas.getContext("2d");
 const bullets = [];
 const meteors = [];
+let animationId;
 
 class Player {
   //Player which is a circle needs x, y, radius and colour
@@ -108,7 +109,7 @@ function spawnMeteors() {
 }
 
 function animate() {
-  requestAnimationFrame(animate); //repeats itself
+  animationId = requestAnimationFrame(animate); //repeats itself
   // c.clearRect(0, 0, canvas.clientWidth, canvas.height); //Every time the loop runs it will clear the drawing hence will look like a bullet moving only
   // player.draw();
   handleCanvasSize(); //keeps adjusting the canvas and replace itself while still drawing my player
@@ -117,6 +118,10 @@ function animate() {
   });
   meteors.forEach((meteor, meteorIndex) => {
     meteor.update(); //keeps updating the x and y value of bullet
+    if (meteor.y + meteor.radius > canvas.clientHeight) {
+      cancelAnimationFrame(animationId);
+      alert("You lose!!!");
+    }
     bullets.forEach((bullet, bulletIndex) => {
       const dist = Math.hypot(bullet.x - meteor.x, bullet.y - meteor.y);
       if (dist - meteor.radius - bullet.radius < 1) {
