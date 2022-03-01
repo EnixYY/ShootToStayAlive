@@ -86,8 +86,8 @@ function handleCanvasSize() {
   player.draw();
 }
 
-// //Call the function out so that at the very start it will be the right size
-handleCanvasSize();
+//Call the function out so that at the very start it will be the right size
+// handleCanvasSize();
 
 function spawnMeteors() {
   setInterval(() => {
@@ -109,17 +109,24 @@ function spawnMeteors() {
 }
 
 function animate() {
-  animationId = requestAnimationFrame(animate); //repeats itself
+  animationId = requestAnimationFrame(animate); //repeats itself also it will get the frame ID of the animation
   // c.clearRect(0, 0, canvas.clientWidth, canvas.height); //Every time the loop runs it will clear the drawing hence will look like a bullet moving only
   // player.draw();
   handleCanvasSize(); //keeps adjusting the canvas and replace itself while still drawing my player
-  bullets.forEach((bullet) => {
+  bullets.forEach((bullet, bulletIndex) => {
     bullet.update(); //keeps updating the x and y value of bullet
+    if (
+      bullet.x + bullet.radius < 0 ||
+      bullet.x - bullet.radius > canvas.clientWidth ||
+      bullet.y + bullet.radius < 0
+    ) {
+      bullets.splice(bulletIndex, 1);
+    } // if statement is to check if bullets go out of screen will it still be "appearing". If yes then splice them out.
   });
   meteors.forEach((meteor, meteorIndex) => {
     meteor.update(); //keeps updating the x and y value of bullet
     if (meteor.y + meteor.radius > canvas.clientHeight) {
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(animationId); //this will stop all the animation via the frame ID
       alert("You lose!!!");
     }
     bullets.forEach((bullet, bulletIndex) => {
@@ -127,7 +134,7 @@ function animate() {
       if (dist - meteor.radius - bullet.radius < 1) {
         meteors.splice(meteorIndex, 1);
         bullets.splice(bulletIndex, 1);
-      }
+      } //everytime will check if the distance is smaller than 1 then take out the bullet and meteor
     });
   });
 }
@@ -136,6 +143,7 @@ function animate() {
 window.addEventListener("resize", handleCanvasSize);
 //Whenever there is a click it will activate bullet
 window.addEventListener("click", (event) => {
+  console.log(bullets);
   const angle = Math.atan2(
     event.clientY - canvas.clientHeight - 10,
     event.clientX - canvas.clientWidth / 2
@@ -152,7 +160,7 @@ window.addEventListener("click", (event) => {
       "black",
       velocity
     )
-  );
+  ); //make new bullet and push into the array
 }); //check when click to get value of the mouse click x and y and calculate the velocity
 
 animate();
