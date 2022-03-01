@@ -25,3 +25,7 @@ body {
   top: 0;
   left: 0;
 }
+
+.container .score-board {
+  position: fixed;
+}

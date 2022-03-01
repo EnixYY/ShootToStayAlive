@@ -3,6 +3,7 @@ const c = canvas.getContext("2d");
 const bullets = [];
 const meteors = [];
 let animationId;
+let score = 0;
 
 class Player {
   //Player which is a circle needs x, y, radius and colour
@@ -84,14 +85,21 @@ function handleCanvasSize() {
   const y = canvas.clientHeight - 10; //10 cause its the size of the player
   const player = new Player(x, y, 10, "#black");
   player.draw();
+  printScore();
 }
 
 //Call the function out so that at the very start it will be the right size
-// handleCanvasSize();
+handleCanvasSize();
+
+function printScore() {
+  c.font = "20px Arial";
+  c.fillText("Score: ", 8, 30);
+  c.fillText(`${score}`, 70, 30);
+}
 
 function spawnMeteors() {
   setInterval(() => {
-    const radius = Math.random() * (50 - 20) + 20;
+    const radius = Math.random() * (50 - 20) + 20; //50 is the biggest 20 is the smallest
     const x = Math.random() * canvas.clientWidth; //gets any number within the width
     const y = 0 - radius; //starts from outside of canvas
     const colour = "red";
@@ -101,11 +109,11 @@ function spawnMeteors() {
     ); //gets the angle of the triangle
     const velocity = {
       x: 0,
-      y: Math.sin(angle),
+      y: Math.sin(angle) / 10,
     };
     //Every 2 sec will create a random meteor
     meteors.push(new Meteor(x, y, radius, colour, velocity));
-  }, 2000);
+  }, 1000);
 }
 
 function animate() {
@@ -132,8 +140,14 @@ function animate() {
     bullets.forEach((bullet, bulletIndex) => {
       const dist = Math.hypot(bullet.x - meteor.x, bullet.y - meteor.y);
       if (dist - meteor.radius - bullet.radius < 1) {
-        meteors.splice(meteorIndex, 1);
-        bullets.splice(bulletIndex, 1);
+        score += 100;
+        if (meteor.colour === "red") {
+          meteor.colour = "orange";
+          bullets.splice(bulletIndex, 1);
+        } else {
+          meteors.splice(meteorIndex, 1);
+          bullets.splice(bulletIndex, 1);
+        }
       } //everytime will check if the distance is smaller than 1 then take out the bullet and meteor
     });
   });
@@ -143,7 +157,6 @@ function animate() {
 window.addEventListener("resize", handleCanvasSize);
 //Whenever there is a click it will activate bullet
 window.addEventListener("click", (event) => {
-  console.log(bullets);
   const angle = Math.atan2(
     event.clientY - canvas.clientHeight - 10,
     event.clientX - canvas.clientWidth / 2
