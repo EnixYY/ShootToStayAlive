@@ -98,6 +98,10 @@ handleCanvasSize();
 function resetGame() {
   bullets = [];
   meteors = [];
+  menuContainer.style.display = "none";
+  score = 0;
+  scoreBoard.innerHTML = score;
+  bigScore.innerHTML = score;
 }
 
 function spawnMeteors() {
@@ -112,11 +116,11 @@ function spawnMeteors() {
     ); //gets the angle of the triangle
     const velocity = {
       x: 0,
-      y: Math.sin(angle),
+      y: Math.sin(angle) / 2,
     };
     //Every 2 sec will create a random meteor
     meteors.push(new Meteor(x, y, radius, colour, velocity));
-  }, 1000);
+  }, 2000);
 }
 
 function animate() {
@@ -149,7 +153,7 @@ function animate() {
         score += 100;
         scoreBoard.innerHTML = score;
         bigScore.innerHTML = score;
-        if (meteor.colour === "red") {
+        if (meteor.colour === "red" && score > 1000) {
           meteor.colour = "orange";
           bullets.splice(bulletIndex, 1);
         } else {
@@ -170,8 +174,8 @@ window.addEventListener("click", (event) => {
     event.clientX - canvas.clientWidth / 2
   );
   const velocity = {
-    x: Math.cos(angle) * 4,
-    y: Math.sin(angle) * 4,
+    x: Math.cos(angle) * 5,
+    y: Math.sin(angle) * 5,
   };
   bullets.push(
     new Bullet(
@@ -188,8 +192,4 @@ startButton.addEventListener("click", () => {
   resetGame();
   animate();
   spawnMeteors();
-  menuContainer.style.display = "none";
-  score = 0;
-  scoreBoard.innerHTML = score;
-  bigScore.innerHTML = score;
-});
+}); //when start button is click
