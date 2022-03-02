@@ -4,6 +4,7 @@ let bullets = [];
 let meteors = [];
 let animationId;
 let score = 0;
+let spawnTimer;
 const scoreBoard = document.querySelector("#score");
 const bigScore = document.querySelector(".big-score");
 const scoreLabel = document.querySelector(".point-label");
@@ -105,7 +106,7 @@ function resetGame() {
 }
 
 function spawnMeteors() {
-  setInterval(() => {
+  spawnTimer = setInterval(() => {
     const radius = Math.random() * (50 - 20) + 20; //50 is the biggest 20 is the smallest
     const x = Math.random() * canvas.clientWidth; //gets any number within the width
     const y = 0 - radius; //starts from outside of canvas
@@ -116,9 +117,10 @@ function spawnMeteors() {
     ); //gets the angle of the triangle
     const velocity = {
       x: 0,
-      y: Math.sin(angle) / 2,
+      y: Math.sin(angle),
     };
     //Every 2 sec will create a random meteor
+    console.log(meteors);
     meteors.push(new Meteor(x, y, radius, colour, velocity));
   }, 2000);
 }
@@ -145,6 +147,7 @@ function animate() {
       menuContainer.style.display = "flex";
       bigScore.style.display = "block";
       scoreLabel.style.display = "block";
+      clearInterval(spawnTimer);
     }
     bullets.forEach((bullet, bulletIndex) => {
       const dist = Math.hypot(bullet.x - meteor.x, bullet.y - meteor.y);
@@ -155,6 +158,9 @@ function animate() {
         bigScore.innerHTML = score;
         if (meteor.colour === "red" && score > 1000) {
           meteor.colour = "orange";
+          bullets.splice(bulletIndex, 1);
+        } else if (meteor.colour === "orange" && score > 3000) {
+          meteor.colour = "maroon";
           bullets.splice(bulletIndex, 1);
         } else {
           meteors.splice(meteorIndex, 1);
