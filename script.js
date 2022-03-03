@@ -31,7 +31,7 @@ class Player {
 }
 
 class Bullet extends Player {
-  //Player which is a circle needs x, y, radius and colour
+  //Bullet which is a circle needs x, y, radius and colour
   constructor(x, y, radius, colour, velocity) {
     super(x, y, radius, colour);
     this.velocity = velocity;
@@ -45,7 +45,7 @@ class Bullet extends Player {
     //This is to fill the circle drawn
     c.fill();
   }
-  // update is to update the new values as the frame goes
+  //Update is to update the new values as the frame goes
   update() {
     this.draw();
     this.x += this.velocity.x;
@@ -54,7 +54,7 @@ class Bullet extends Player {
 }
 
 class Meteor extends Bullet {
-  //Player which is a circle needs x, y, radius and colour
+  //Meteor which is a circle needs x, y, radius and colour
   constructor(x, y, radius, colour, velocity) {
     super(x, y, radius, colour, velocity);
   }
@@ -67,7 +67,7 @@ class Meteor extends Bullet {
     //This is to fill the circle drawn
     c.fill();
   }
-  // update is to update the new values as the frame goes
+  //Update is to update the new values as the frame goes
   update() {
     this.draw();
     this.x += this.velocity.x;
@@ -78,10 +78,14 @@ class Meteor extends Bullet {
 //This is to change the canvas size according to container
 function handleCanvasSize() {
   const container = document.getElementById("container");
+  //Width to be same as the container
   canvas.width = container.clientWidth;
+  //Minus the size of the div below containing the buildings
   canvas.height = container.clientHeight - 152;
+  //Divide by2 to kee in center
   const x = canvas.clientWidth / 2;
-  const y = canvas.clientHeight - 10; //10 cause its the size of the player
+  //Minus 10 from height cause its the size of the player
+  const y = canvas.clientHeight - 10;
   const player = new Player(x, y, 10, "#black");
   player.draw();
 }
@@ -89,6 +93,7 @@ function handleCanvasSize() {
 //Call the function out so that at the very start it will be the right size
 handleCanvasSize();
 
+//This function will reset all arrays and score displays
 function resetGame() {
   bullets = [];
   meteors = [];
@@ -98,45 +103,52 @@ function resetGame() {
   bigScore.innerHTML = score;
 }
 
+//Every 1 second a new meteor will be pushed into the array
 function spawnMeteors() {
   spawnTimer = setInterval(() => {
-    const radius = Math.random() * (50 - 20) + 20; //50 is the biggest 20 is the smallest
-    const x = Math.random() * canvas.clientWidth; //gets any number within the width
-    const y = 0 - radius; //starts from outside of canvas
+    //50 is the biggest 20 is the smallest
+    const radius = Math.random() * (50 - 20) + 20;
+    //Gets any number within the width
+    const x = Math.random() * canvas.clientWidth;
+    //Starts from outside of canvas
+    const y = 0 - radius;
     const colour = "red";
+    //Gets the angle of the triangle
     const angle = Math.atan2(
       canvas.clientHeight - 10 - y,
       canvas.clientWidth / 2 - x
-    ); //gets the angle of the triangle
+    );
+    //The ratio of the adjacent line and opposite line to push the bullet out towards to the correct direction via the angle
     const velocity = {
       x: 0,
       y: Math.sin(angle),
     };
-    //Every 2 sec will create a random meteor
-    console.log(meteors);
     meteors.push(new Meteor(x, y, radius, colour, velocity));
-  }, 2000);
+  }, 1000);
 }
 
 function animate() {
-  animationId = requestAnimationFrame(animate); //repeats itself also it will get the frame ID of the animation
-  // c.clearRect(0, 0, canvas.clientWidth, canvas.height); //Every time the loop runs it will clear the drawing hence will look like a bullet moving only
-  // player.draw();
-  handleCanvasSize(); //keeps adjusting the canvas and replace itself while still drawing my player
+  //Runs animate over and over again 60 frames per second
+  animationId = requestAnimationFrame(animate);
+  //Adjusting the canvas and replace itself while still drawing my player
+  handleCanvasSize();
   bullets.forEach((bullet, bulletIndex) => {
-    bullet.update(); //keeps updating the x and y value of bullet
+    //Keeps updating the x and y value of bullet
+    bullet.update();
     if (
       bullet.x + bullet.radius < 0 ||
       bullet.x - bullet.radius > canvas.clientWidth ||
       bullet.y + bullet.radius < 0
     ) {
       bullets.splice(bulletIndex, 1);
-    } // if statement is to check if bullets go out of screen will it still be "appearing". If yes then splice them out.
+    } //If statement is to check if bullets go out of screen will it still be "appearing". If yes then splice them out.
   });
   meteors.forEach((meteor, meteorIndex) => {
-    meteor.update(); //keeps updating the x and y value of bullet
+    //Keeps updating the x and y value of bullet
+    meteor.update();
     if (meteor.y + meteor.radius > canvas.clientHeight) {
-      cancelAnimationFrame(animationId); //this will stop all the animation via the frame ID
+      //This will stop all the animation via the frame ID
+      cancelAnimationFrame(animationId);
       menuContainer.style.display = "flex";
       bigScore.style.display = "block";
       scoreLabel.style.display = "block";
@@ -144,34 +156,40 @@ function animate() {
     }
     bullets.forEach((bullet, bulletIndex) => {
       const dist = Math.hypot(bullet.x - meteor.x, bullet.y - meteor.y);
-      //player dies
+      //If distance between meteor and bullet is less than 1 score will increase and also display on the scoreboard and the big menu score
       if (dist - meteor.radius - bullet.radius < 1) {
         score += 100;
         scoreBoard.innerHTML = score;
         bigScore.innerHTML = score;
+        //When score is higher than 1000 then it will change its colour making the meteor 2 shot kill
         if (meteor.colour === "red" && score > 1000) {
           meteor.colour = "orange";
           bullets.splice(bulletIndex, 1);
+          //When score is higher than 1000 then it will change its colour making the meteor 3 shot kill
         } else if (meteor.colour === "orange" && score > 3000) {
           meteor.colour = "maroon";
           bullets.splice(bulletIndex, 1);
+          //Else splice them out of the array
         } else {
           meteors.splice(meteorIndex, 1);
           bullets.splice(bulletIndex, 1);
         }
-      } //everytime will check if the distance is smaller than 1 then take out the bullet and meteor
+      }
     });
   });
 }
 
-// //This is when window resize it will also resize the canvas
+// //This is when window resize it will activate the handleCanvasSize function which will change the width and length of the canvas
 window.addEventListener("resize", handleCanvasSize);
-//Whenever there is a click it will activate bullet
+
+//Whenever there is a click in the window it will activate push a bullet into the array
 window.addEventListener("click", (event) => {
+  //Gets the angle of the triangle
   const angle = Math.atan2(
     event.clientY - canvas.clientHeight - 10,
     event.clientX - canvas.clientWidth / 2
   );
+  //The ratio of the adjacent line and opposite line to push the bullet out towards to the correct direction via the angle
   const velocity = {
     x: Math.cos(angle) * 5,
     y: Math.sin(angle) * 5,
@@ -184,10 +202,10 @@ window.addEventListener("click", (event) => {
       "black",
       velocity
     )
-  ); //make new bullet and push into the array
-}); //check when click to get value of the mouse click x and y and calculate the velocity
+  );
+});
 
-//when start button is click
+//When let's go button is click, the following functions will activate
 startButton.addEventListener("click", () => {
   resetGame();
   animate();
