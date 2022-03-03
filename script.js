@@ -162,11 +162,11 @@ function animate() {
         scoreBoard.innerHTML = score;
         bigScore.innerHTML = score;
         //When score is higher than 1000 then it will change its colour making the meteor 2 shot kill
-        if (meteor.colour === "red" && score > 1000) {
+        if (meteor.colour === "red" && score > 2000) {
           meteor.colour = "orange";
           bullets.splice(bulletIndex, 1);
           //When score is higher than 3000 then it will change its colour making the meteor 3 shot kill
-        } else if (meteor.colour === "orange" && score > 3000) {
+        } else if (meteor.colour === "orange" && score > 5000) {
           meteor.colour = "maroon";
           bullets.splice(bulletIndex, 1);
           //Else splice them out of the array
