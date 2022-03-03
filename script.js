@@ -103,7 +103,7 @@ function resetGame() {
   bigScore.innerHTML = score;
 }
 
-//Every 1 second a new meteor will be pushed into the array
+//Every 1.5 second a new meteor will be pushed into the array
 function spawnMeteors() {
   spawnTimer = setInterval(() => {
     //50 is the biggest 20 is the smallest
@@ -124,7 +124,7 @@ function spawnMeteors() {
       y: Math.sin(angle),
     };
     meteors.push(new Meteor(x, y, radius, colour, velocity));
-  }, 1000);
+  }, 1500);
 }
 
 function animate() {
@@ -165,7 +165,7 @@ function animate() {
         if (meteor.colour === "red" && score > 1000) {
           meteor.colour = "orange";
           bullets.splice(bulletIndex, 1);
-          //When score is higher than 1000 then it will change its colour making the meteor 3 shot kill
+          //When score is higher than 3000 then it will change its colour making the meteor 3 shot kill
         } else if (meteor.colour === "orange" && score > 3000) {
           meteor.colour = "maroon";
           bullets.splice(bulletIndex, 1);
@@ -191,8 +191,8 @@ window.addEventListener("click", (event) => {
   );
   //The ratio of the adjacent line and opposite line to push the bullet out towards to the correct direction via the angle
   const velocity = {
-    x: Math.cos(angle) * 5,
-    y: Math.sin(angle) * 5,
+    x: Math.cos(angle) * 6,
+    y: Math.sin(angle) * 6,
   };
   bullets.push(
     new Bullet(

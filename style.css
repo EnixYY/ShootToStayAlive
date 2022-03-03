@@ -79,6 +79,17 @@ body {
   color: black;
   font-size: 20px;
   background-color: aqua;
+  border-radius: 12px;
+  border: none;
+  margin-top: 10px;
+  user-select: none;
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.start-button:hover {
+  color: black;
+  font-size: 20px;
+  background-color: aqua;
   width: 50%;
   border-radius: 12px;
   border: none;
@@ -86,4 +97,5 @@ body {
   padding: 10px 10px 10px 10px;
   user-select: none;
   font-family: "Lucida Console", "Courier New", monospace;
+  transition: 0.7s;
 }
