@@ -30,13 +30,10 @@ class Player {
   }
 }
 
-class Bullet {
+class Bullet extends Player {
   //Player which is a circle needs x, y, radius and colour
   constructor(x, y, radius, colour, velocity) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.colour = colour;
+    super(x, y, radius, colour);
     this.velocity = velocity;
   }
   draw() {
@@ -56,14 +53,10 @@ class Bullet {
   }
 }
 
-class Meteor {
+class Meteor extends Bullet {
   //Player which is a circle needs x, y, radius and colour
   constructor(x, y, radius, colour, velocity) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.colour = colour;
-    this.velocity = velocity;
+    super(x, y, radius, colour, velocity);
   }
   draw() {
     //Need to draw the circle on the canvas
@@ -194,8 +187,9 @@ window.addEventListener("click", (event) => {
   ); //make new bullet and push into the array
 }); //check when click to get value of the mouse click x and y and calculate the velocity
 
+//when start button is click
 startButton.addEventListener("click", () => {
   resetGame();
   animate();
   spawnMeteors();
-}); //when start button is click
+});
