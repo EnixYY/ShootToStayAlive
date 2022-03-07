@@ -14,4 +14,5 @@ Within JavaScript, HTML5 Canvas was used and requestAnimationFrame to animate th
 # Future features
 
 Create a key down bomb function
+
 Create a local storage for high score display
